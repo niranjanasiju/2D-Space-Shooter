@@ -1,0 +1,72 @@
+# Ignore user-specific files
+*.user
+*.userprefs
+*.pidb
+*.suo
+*.tmp
+*.bak
+
+# Ignore build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+[Dd]eploy/
+[Dd]eployment/
+[Dd]ebugger/
+[Dd]ebugged/
+Build/
+Builds/
+
+# Ignore Unity cache files
+Library/
+Temp/
+Obj/
+.idea/
+.vscode/
+
+# Ignore Unity Asset and Scene files that should not be tracked
+*.pidb.meta
+*.unityproj
+*.sln
+*.userprefs
+
+# Ignore certain Unity-specific folders and files
+*.log
+*.pdb
+*.mdb
+*.swp
+*.swo
+.DS_Store
+
+# Ignore LFS-specific files (you can track them with Git LFS instead)
+*.psd
+*.tiff
+*.png
+*.jpg
+*.mp3
+*.ogg
+*.wav
+*.mp4
+*.mov
+*.avi
+*.obj
+*.fbx
+*.max
+*.blend
+
+# Ignore editor folders
+Editor/
+
+# Ignore build folders
+Build/
+
+# Unity
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+UserSettings/
+
+# MacOS
+.DS_Store

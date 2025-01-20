@@ -70,8 +70,10 @@
     <Compile Include="Assets/Scripts/PlanetController.cs" />
     <Compile Include="Assets/Scripts/Planet.cs" />
     <Compile Include="Assets/Scripts/EnemyBullet.cs" />
+    <Compile Include="Assets/Scripts/PlayerNameInput.cs" />
     <Compile Include="Assets/Scripts/TimeCounter.cs" />
     <Compile Include="Assets/Scripts/Star.cs" />
+    <Compile Include="Assets/Scripts/HighScoreManager.cs" />
     <Compile Include="Assets/Scripts/EnemySpawner.cs" />
     <Compile Include="Assets/Scripts/StarGenerator.cs" />
     <Compile Include="Assets/Scripts/GameManager.cs" />

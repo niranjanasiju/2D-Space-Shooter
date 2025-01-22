@@ -44,6 +44,9 @@ public class GameManager : MonoBehaviour
         newHighScoreText.SetActive(false); // Hide new high score notification initially
         playerNameInputText.SetActive(false);
         submitButton.SetActive(false);
+        playButton.SetActive(true);
+        GameOverGO.SetActive(false);
+        GameTitleGO.SetActive(true);
         highScoreManager.ResetHighScore();
     }
 
@@ -66,6 +69,11 @@ public class GameManager : MonoBehaviour
                 TimeCounterGO.GetComponent<TimeCounter>().ResetTimeCounter();
                 //show high score
                 highScoreUITextGO.SetActive(true);
+                leaderboardUITextGO.SetActive(false);
+                backButton.SetActive(false);
+                newHighScoreText.SetActive(false);
+                playerNameInputText.SetActive(false);
+                submitButton.SetActive(false);
                 break;
             case GameManagerState.Gameplay:
                 // Hide game title
@@ -85,6 +93,10 @@ public class GameManager : MonoBehaviour
                 leaderboardUITextGO.SetActive(false);
                 backButton.SetActive(false); // Hide back button
                 viewLeaderboardButton.SetActive(false);
+                newHighScoreText.SetActive(false);
+                playerNameInputText.SetActive(false);
+                submitButton.SetActive(false);
+                GameOverGO.SetActive(false);
                 break;
             case GameManagerState.GameOver:
                 // Stop the time counter
@@ -99,6 +111,13 @@ public class GameManager : MonoBehaviour
                 //get current score
                 int currentScore =  scoreUITextGO.GetComponent<GameScore>().Score;
 
+                playerNameInputText.SetActive(false);
+                submitButton.SetActive(false);
+                newHighScoreText.SetActive(false);
+                playButton.SetActive(false);
+                GameTitleGO.SetActive(false);
+                leaderboardUITextGO.SetActive(false);
+
                 //check if the leaderboard has to be updated
                 int thirdrankScore = highScoreManager.GetThirdRankScore();
                 if (currentScore > thirdrankScore)
@@ -106,7 +125,7 @@ public class GameManager : MonoBehaviour
                     //update the leaderboard
                     playerNameInputText.SetActive(true);
                     submitButton.SetActive(true);
-                    //highScoreManager.UpdateLeaderboard(playerName, currentScore);
+                    
                     
                 }
 
@@ -126,9 +145,11 @@ public class GameManager : MonoBehaviour
                 //hide view leaderboard button
                 viewLeaderboardButton.SetActive(false);
                 
+                // Show back button
+                backButton.SetActive(true); 
                 
                 // Change game manager state to opening state
-                Invoke("ChangeToOpeningState", 8f);
+                //Invoke("GoBackToOpening", 8f);
                 break;
             case GameManagerState.Leaderboard:
                 // Hide other UI elements and show leaderboard
@@ -145,6 +166,10 @@ public class GameManager : MonoBehaviour
                 }
                 // Show leaderboard
                 leaderboardUITextGO.SetActive(true);
+                GameOverGO.SetActive(false);
+                newHighScoreText.SetActive(false);
+                playerNameInputText.SetActive(false);
+                submitButton.SetActive(false);
                 break;
         }
     }
@@ -167,9 +192,9 @@ public class GameManager : MonoBehaviour
     public void ChangeToOpeningState()
     {
         SetGameManagerState(GameManagerState.Opening);
-        newHighScoreText.SetActive(false); // Hide new high score notification when returning to opening state
-        playerNameInputText.SetActive(false);
-        submitButton.SetActive(false);
+        //newHighScoreText.SetActive(false); // Hide new high score notification when returning to opening state
+        //playerNameInputText.SetActive(false);
+        //submitButton.SetActive(false);
     }
 
     // Function to view leaderboard
@@ -182,9 +207,13 @@ public class GameManager : MonoBehaviour
     public void GoBackToOpening()
     {
         SetGameManagerState(GameManagerState.Opening);
-        backButton.SetActive(false);
-        leaderboardUITextGO.SetActive(false);
-        highScoreUITextGO.SetActive(true);
+        //backButton.SetActive(false);
+        //leaderboardUITextGO.SetActive(false);
+        //highScoreUITextGO.SetActive(true);
+        //newHighScoreText.SetActive(false);
+        //playerNameInputText.SetActive(false);
+        //submitButton.SetActive(false);
+
     }
 
     // Function to handle the submit button click
@@ -200,7 +229,7 @@ public class GameManager : MonoBehaviour
 
             playerNameInputText.SetActive(false);
             submitButton.SetActive(false);
-            newHighScoreText.SetActive(false);
+            newHighScoreText.SetActive(true);
 
             // Save the player's name along with the score
             highScoreManager.UpdateLeaderboard(playerName, scoreUITextGO.GetComponent<GameScore>().Score);

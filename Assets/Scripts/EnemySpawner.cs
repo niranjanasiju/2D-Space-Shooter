@@ -21,8 +21,12 @@ public class EnemySpawner : MonoBehaviour
     {
         Vector2 min = Camera.main.ViewportToWorldPoint (new Vector2 (0,0));
         Vector2 max = Camera.main.ViewportToWorldPoint (new Vector2 (1,1));
+
+        float spawnMinX = min.x + (max.x - min.x) * 0.2f; // 20% margin from the left
+        float spawnMaxX = max.x - (max.x - min.x) * 0.2f; // 20% margin from the right
+
         GameObject anEnemy = (GameObject)Instantiate (EnemyGO);
-        anEnemy.transform.position = new Vector2 (Random.Range (min.x, max.x), max.y);
+        anEnemy.transform.position = new Vector2 (Random.Range (spawnMinX, spawnMaxX), max.y);
 
         ScheduleNextEnemySpawn ();
     }

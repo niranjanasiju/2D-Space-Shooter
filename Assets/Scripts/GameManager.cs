@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     public GameObject leaderboardUITextGO; // Reference to the leaderboard UI text
     public GameObject viewLeaderboardButton; // Reference to the View Leaderboard button
     public GameObject backButton; // Reference to the Back button
+    public GameObject newHighScoreText; // Reference to the new high score notification text
+    public GameObject playerNameInputText;
+    public GameObject submitButton;
+
+    public string playerName = ""; // to store the player name
 
     public enum GameManagerState
     {
@@ -36,114 +41,173 @@ public class GameManager : MonoBehaviour
         highScoreUITextGO.SetActive(true); // Ensure high score is visible initially
         leaderboardUITextGO.SetActive(false); // Ensure leaderboard is visible initially
         backButton.SetActive(false); // Hide back button initially
+        newHighScoreText.SetActive(false); // Hide new high score notification initially
+        playerNameInputText.SetActive(false);
+        submitButton.SetActive(false);
+        highScoreManager.ResetHighScore();
     }
 
-    //function to update game manager state
+    // Function to update game manager state
     void UpdateGameManagerState()
     {
-        switch(GMState)
+        switch (GMState)
         {
-        case GameManagerState.Opening:
-            //hide game over
-            GameOverGO.SetActive(false);
-            //display the game title
-            GameTitleGO.SetActive(true);
-            //set play button visible
-            playButton.SetActive(true);
-            viewLeaderboardButton.SetActive(true); // Show View Leaderboard button
-            break;
-        case GameManagerState.Gameplay:
-            //hide game title
-            GameTitleGO.SetActive(false);
-            //reset score to zero
-            scoreUITextGO.GetComponent<GameScore>().Score = 0;
-            //hide play button
-            playButton.SetActive(false);
-            //show player ship
-            playerShip.GetComponent<PlayerControl>().Init();
-            //show enemy spawner
-            enemySpawner.GetComponent<EnemySpawner>().ScheduleEnemySpawner();
-            //show time counter
-            TimeCounterGO.GetComponent<TimeCounter>().StartTimeCounter();
-            // Hide high score and leaderboard
-            highScoreUITextGO.SetActive(false);
-            leaderboardUITextGO.SetActive(false);
-            backButton.SetActive(false); // Hide back button
-            viewLeaderboardButton.SetActive(false);
-            break;
-        case GameManagerState.GameOver:
-            //stop the time counter
-            TimeCounterGO.GetComponent<TimeCounter>().StopTimeCounter();
+            case GameManagerState.Opening:
+                // Hide game over
+                GameOverGO.SetActive(false);
+                // Display the game title
+                GameTitleGO.SetActive(true);
+                // Set play button visible
+                playButton.SetActive(true);
+                viewLeaderboardButton.SetActive(true); // Show View Leaderboard button
+                // Reset score to zero
+                scoreUITextGO.GetComponent<GameScore>().Score = 0;
+                //reset time counter to zero
+                TimeCounterGO.GetComponent<TimeCounter>().ResetTimeCounter();
+                //show high score
+                highScoreUITextGO.SetActive(true);
+                break;
+            case GameManagerState.Gameplay:
+                // Hide game title
+                GameTitleGO.SetActive(false);
+                // Reset score to zero
+                scoreUITextGO.GetComponent<GameScore>().Score = 0;
+                // Hide play button
+                playButton.SetActive(false);
+                // Show player ship
+                playerShip.GetComponent<PlayerControl>().Init();
+                // Show enemy spawner
+                enemySpawner.GetComponent<EnemySpawner>().ScheduleEnemySpawner();
+                // Show time counter
+                TimeCounterGO.GetComponent<TimeCounter>().StartTimeCounter();
+                // Hide high score and leaderboard
+                highScoreUITextGO.SetActive(false);
+                leaderboardUITextGO.SetActive(false);
+                backButton.SetActive(false); // Hide back button
+                viewLeaderboardButton.SetActive(false);
+                break;
+            case GameManagerState.GameOver:
+                // Stop the time counter
+                TimeCounterGO.GetComponent<TimeCounter>().StopTimeCounter();
 
-            //stop enemy spawner
-            enemySpawner.GetComponent<EnemySpawner>().UnsheduleEnemySpawner();
+                // Stop enemy spawner
+                enemySpawner.GetComponent<EnemySpawner>().UnsheduleEnemySpawner();
 
-            //display game over
-            GameOverGO.SetActive(true);
-            // Display the high score
-            int currentHighScore = highScoreManager.GetHighScore();
-            highScoreUITextGO.GetComponent<TMP_Text>().text = "High Score: " + currentHighScore.ToString();
-            // Show high score
-            highScoreUITextGO.SetActive(true);
-            
-            // Update and display the leaderboard
-            highScoreManager.UpdateLeaderboard(scoreUITextGO.GetComponent<GameScore>().Score);
-            List<int> leaderboard = highScoreManager.GetLeaderboard();
-            leaderboardUITextGO.GetComponent<TMP_Text>().text = "Leaderboard:\n";
-            for (int i = 0; i < leaderboard.Count; i++)
-            {
-                leaderboardUITextGO.GetComponent<TMP_Text>().text += (i + 1) + ". " + leaderboard[i].ToString() + "\n";
-            }
-            // Show leaderboard
-            leaderboardUITextGO.SetActive(false);
-            viewLeaderboardButton.SetActive(false);
-            //change game manager state to opening state
-            Invoke("ChangeToOpeningState",8f);
-            break;
-        case GameManagerState.Leaderboard:
-            // Hide other UI elements and show leaderboard
-            GameTitleGO.SetActive(false);
-            playButton.SetActive(false);
-            viewLeaderboardButton.SetActive(false);
-            highScoreUITextGO.SetActive(false);
-            backButton.SetActive(true); // Show back button
-            leaderboardUITextGO.SetActive(true);
-            break;
+                // Display game over
+                GameOverGO.SetActive(true);
+
+                //get current score
+                int currentScore =  scoreUITextGO.GetComponent<GameScore>().Score;
+
+                //check if the leaderboard has to be updated
+                int thirdrankScore = highScoreManager.GetThirdRankScore();
+                if (currentScore > thirdrankScore)
+                {
+                    //update the leaderboard
+                    playerNameInputText.SetActive(true);
+                    submitButton.SetActive(true);
+                    //highScoreManager.UpdateLeaderboard(playerName, currentScore);
+                    
+                }
+
+                // Update the high score
+                int currentHighScore = highScoreManager.GetHighScore();
+                if (currentScore > currentHighScore)
+                {
+                    highScoreManager.SetHighScore(currentScore);
+                    newHighScoreText.GetComponent<TMP_Text>().text = "Congratulations\nYou have set a new High Score!!";
+                    highScoreUITextGO.GetComponent<TMP_Text>().text = "High Score : " + currentScore.ToString();
+                    newHighScoreText.SetActive(true);
+                    
+                }
+
+                // hide high score for now
+                highScoreUITextGO.SetActive(false);
+                //hide view leaderboard button
+                viewLeaderboardButton.SetActive(false);
+                
+                
+                // Change game manager state to opening state
+                Invoke("ChangeToOpeningState", 8f);
+                break;
+            case GameManagerState.Leaderboard:
+                // Hide other UI elements and show leaderboard
+                GameTitleGO.SetActive(false);
+                playButton.SetActive(false);
+                viewLeaderboardButton.SetActive(false);
+                highScoreUITextGO.SetActive(false);
+                backButton.SetActive(true); // Show back button
+                leaderboardUITextGO.GetComponent<TMP_Text>().text = "Leaderboard:\n";
+                List<KeyValuePair<string, int>> leaderboard = highScoreManager.GetLeaderboard();
+                for (int i = 0; i < leaderboard.Count; i++)
+                {
+                    leaderboardUITextGO.GetComponent<TMP_Text>().text += (i + 1) + ". " + leaderboard[i].Key + ": " + leaderboard[i].Value + "\n";
+                }
+                // Show leaderboard
+                leaderboardUITextGO.SetActive(true);
+                break;
         }
     }
 
-    //function to set game manager state
+    // Function to set game manager state
     public void SetGameManagerState(GameManagerState state)
     {
         GMState = state;
         UpdateGameManagerState();
     }
 
-    //function called by play button when clicked
+    // Function called by play button when clicked
     public void StartGamePlay()
     {
         GMState = GameManagerState.Gameplay;
-        UpdateGameManagerState ();
+        UpdateGameManagerState();
     }
 
-    //function to change game manager state to opening state
+    // Function to change game manager state to opening state
     public void ChangeToOpeningState()
     {
-        SetGameManagerState (GameManagerState.Opening);
+        SetGameManagerState(GameManagerState.Opening);
+        newHighScoreText.SetActive(false); // Hide new high score notification when returning to opening state
+        playerNameInputText.SetActive(false);
+        submitButton.SetActive(false);
     }
 
-    //function to view leaderboard
+    // Function to view leaderboard
     public void ViewLeaderboard()
     {
         SetGameManagerState(GameManagerState.Leaderboard);
     }
 
-    //function to go back to opening state
+    // Function to go back to opening state
     public void GoBackToOpening()
     {
         SetGameManagerState(GameManagerState.Opening);
         backButton.SetActive(false);
         leaderboardUITextGO.SetActive(false);
         highScoreUITextGO.SetActive(true);
+    }
+
+    // Function to handle the submit button click
+    public void SubmitPlayerName()
+    {
+        playerName = playerNameInputText.GetComponent<TMP_InputField>().text; // Read input field text
+        if (!string.IsNullOrEmpty(playerName))
+        {
+            Debug.Log("Player Name Submitted: " + playerName);
+            
+            // Clear the input field
+            playerNameInputText.GetComponent<TMP_InputField>().text = "";
+
+            playerNameInputText.SetActive(false);
+            submitButton.SetActive(false);
+            newHighScoreText.SetActive(false);
+
+            // Save the player's name along with the score
+            highScoreManager.UpdateLeaderboard(playerName, scoreUITextGO.GetComponent<GameScore>().Score);
+        }
+        else
+        {
+            Debug.Log("Player Name is empty. Please enter a valid name.");
+        }
     }
 }

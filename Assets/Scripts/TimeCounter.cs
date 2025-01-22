@@ -34,6 +34,12 @@ public class TimeCounter : MonoBehaviour
         startCounter = false;
     }
 
+    //set the time counter to zero
+    public void ResetTimeCounter()
+    {
+        timeUI.text = string.Format("00:00");
+    }
+
     // Update is called once per frame
     void Update()
     {

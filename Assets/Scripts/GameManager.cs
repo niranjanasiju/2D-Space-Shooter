@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public GameObject newHighScoreText; // Reference to the new high score notification text
     public GameObject playerNameInputText;
     public GameObject submitButton;
+    public GameObject quitButton; // Reference to the Quit button
 
     public string playerName = ""; // to store the player name
 
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
         playButton.SetActive(true);
         GameOverGO.SetActive(false);
         GameTitleGO.SetActive(true);
+        quitButton.SetActive(false); // Hide quit button initially
         highScoreManager.ResetHighScore();
     }
 
@@ -74,6 +76,7 @@ public class GameManager : MonoBehaviour
                 newHighScoreText.SetActive(false);
                 playerNameInputText.SetActive(false);
                 submitButton.SetActive(false);
+                quitButton.SetActive(false); // Hide quit button
                 break;
             case GameManagerState.Gameplay:
                 // Hide game title
@@ -97,6 +100,7 @@ public class GameManager : MonoBehaviour
                 playerNameInputText.SetActive(false);
                 submitButton.SetActive(false);
                 GameOverGO.SetActive(false);
+                quitButton.SetActive(true); // Show quit button
                 break;
             case GameManagerState.GameOver:
                 // Stop the time counter
@@ -117,6 +121,7 @@ public class GameManager : MonoBehaviour
                 playButton.SetActive(false);
                 GameTitleGO.SetActive(false);
                 leaderboardUITextGO.SetActive(false);
+                quitButton.SetActive(true); // Show quit button
 
                 //check if the leaderboard has to be updated
                 int thirdrankScore = highScoreManager.GetThirdRankScore();
@@ -125,8 +130,6 @@ public class GameManager : MonoBehaviour
                     //update the leaderboard
                     playerNameInputText.SetActive(true);
                     submitButton.SetActive(true);
-                    
-                    
                 }
 
                 // Update the high score
@@ -137,7 +140,6 @@ public class GameManager : MonoBehaviour
                     newHighScoreText.GetComponent<TMP_Text>().text = "Congratulations\nYou have set a new High Score!!";
                     highScoreUITextGO.GetComponent<TMP_Text>().text = "High Score : " + currentScore.ToString();
                     newHighScoreText.SetActive(true);
-                    
                 }
 
                 // hide high score for now
@@ -158,11 +160,11 @@ public class GameManager : MonoBehaviour
                 viewLeaderboardButton.SetActive(false);
                 highScoreUITextGO.SetActive(false);
                 backButton.SetActive(true); // Show back button
-                leaderboardUITextGO.GetComponent<TMP_Text>().text = "Leaderboard:\n";
+                leaderboardUITextGO.GetComponent<TMP_Text>().text = "Leaderboard:\n\n";
                 List<KeyValuePair<string, int>> leaderboard = highScoreManager.GetLeaderboard();
                 for (int i = 0; i < leaderboard.Count; i++)
                 {
-                    leaderboardUITextGO.GetComponent<TMP_Text>().text += (i + 1) + ". " + leaderboard[i].Key + ": " + leaderboard[i].Value + "\n";
+                    leaderboardUITextGO.GetComponent<TMP_Text>().text += (i + 1) + ". " + leaderboard[i].Key + " : " + leaderboard[i].Value + "\n";
                 }
                 // Show leaderboard
                 leaderboardUITextGO.SetActive(true);
@@ -192,9 +194,6 @@ public class GameManager : MonoBehaviour
     public void ChangeToOpeningState()
     {
         SetGameManagerState(GameManagerState.Opening);
-        //newHighScoreText.SetActive(false); // Hide new high score notification when returning to opening state
-        //playerNameInputText.SetActive(false);
-        //submitButton.SetActive(false);
     }
 
     // Function to view leaderboard
@@ -207,13 +206,6 @@ public class GameManager : MonoBehaviour
     public void GoBackToOpening()
     {
         SetGameManagerState(GameManagerState.Opening);
-        //backButton.SetActive(false);
-        //leaderboardUITextGO.SetActive(false);
-        //highScoreUITextGO.SetActive(true);
-        //newHighScoreText.SetActive(false);
-        //playerNameInputText.SetActive(false);
-        //submitButton.SetActive(false);
-
     }
 
     // Function to handle the submit button click
@@ -230,7 +222,6 @@ public class GameManager : MonoBehaviour
             playerNameInputText.SetActive(false);
             submitButton.SetActive(false);
             
-
             // Save the player's name along with the score
             highScoreManager.UpdateLeaderboard(playerName, scoreUITextGO.GetComponent<GameScore>().Score);
         }
@@ -238,5 +229,13 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Player Name is empty. Please enter a valid name.");
         }
+    }
+
+    // Function to quit the game
+    public void QuitGame()
+    {
+        Application.Quit();
+        Debug.Log("You pressed quit button.");
+        //EditorApplication.isPlaying = false;
     }
 }

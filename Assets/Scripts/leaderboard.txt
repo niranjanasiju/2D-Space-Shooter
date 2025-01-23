@@ -1,3 +1,3 @@
-test1,200
-test2,700
 test4,1000
+test5,700
+test7,1000

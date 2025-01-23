@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour
 
             playerNameInputText.SetActive(false);
             submitButton.SetActive(false);
-            newHighScoreText.SetActive(true);
+            
 
             // Save the player's name along with the score
             highScoreManager.UpdateLeaderboard(playerName, scoreUITextGO.GetComponent<GameScore>().Score);
